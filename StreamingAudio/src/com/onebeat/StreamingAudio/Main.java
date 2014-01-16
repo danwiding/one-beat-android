@@ -1,9 +1,8 @@
-package rmd.media.StreamingAudio;
+package com.onebeat.StreamingAudio;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.InvalidParameterException;
-
+import com.onebeat.StreamingAudio.R;
 import android.app.Activity;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioFormat;
