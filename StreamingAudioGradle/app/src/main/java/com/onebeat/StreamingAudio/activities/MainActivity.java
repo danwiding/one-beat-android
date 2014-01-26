@@ -1,4 +1,4 @@
-package com.onebeat.StreamingAudio;
+package com.onebeat.StreamingAudio.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class Main extends Activity {
+import com.onebeat.StreamingAudio.R;
+
+public class MainActivity extends Activity {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -20,9 +22,9 @@ public class Main extends Activity {
 			@Override
 			public void onClick(View v) {
 				// launch Training Activity
-				Intent myIntent = new Intent(Main.this, Train.class);
+				Intent myIntent = new Intent(MainActivity.this, TrainActivity.class);
 //				myIntent.putExtra("key", value); //Optional parameters
-				Main.this.startActivity(myIntent);
+				MainActivity.this.startActivity(myIntent);
 			}
 		});        
     }
