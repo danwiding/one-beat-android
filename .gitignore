@@ -26,9 +26,19 @@ proguard/
 *.iml
 *.ipr
 *.iws
+
+# Android Studio
 .idea/
+.gradle
+/*/local.properties
+/*/out
+/*/*/build
+/*/*/production
+*.iml
+*.iws
+*.ipr
+*~
+*.swp
 
 # Other Source Control Systems
 *.svn
-
-#this is a silly change
