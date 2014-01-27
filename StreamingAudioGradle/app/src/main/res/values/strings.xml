@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="playvibrate">Vibrate and Play Activity</string>
     <string name="train">Training Activity</string>
     <string name="app_name">One Beat</string>
 </resources>

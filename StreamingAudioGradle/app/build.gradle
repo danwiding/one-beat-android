@@ -1,5 +1,4 @@
 apply plugin: 'android'
-
 android {
     compileSdkVersion 17
     buildToolsVersion "19.0.0"
@@ -15,4 +14,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+}
+
+dependencies {
+    compile files('libs/opencsv-2.3/deploy/opencsv-2.3.jar')
 }

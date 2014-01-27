@@ -26,6 +26,18 @@ public class MainActivity extends Activity {
 //				myIntent.putExtra("key", value); //Optional parameters
 				MainActivity.this.startActivity(myIntent);
 			}
-		});        
+		});
+
+        Button btnPlayVibrate = (Button)findViewById(R.id.btnPlayVibrate);
+        btnPlayVibrate.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // launch Training Activity
+                Intent myIntent = new Intent(MainActivity.this, VibrationPlayActivity.class);
+//				myIntent.putExtra("key", value); //Optional parameters
+                MainActivity.this.startActivity(myIntent);
+            }
+        });
     }
 }

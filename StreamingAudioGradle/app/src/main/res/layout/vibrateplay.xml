@@ -7,7 +7,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/train" />
+        android:text="@string/playvibrate" />
 
     <Button
         android:id="@+id/btnStream"
@@ -20,12 +20,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Stop Song" />
-
-    <Button
-        android:id="@+id/btnTap"
-        android:layout_width="245dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.00"
-        android:text="Tap" />
 
 </LinearLayout>

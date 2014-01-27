@@ -16,12 +16,12 @@ public class AudioHelperBase {
     int bufferSize = 0;
     Thread transferThread;
     boolean stopFlag = false;
+    long fileSize = 0;
 
     public AudioHelperBase(Context context, String fileName) {
 
         /* OPEN FILE */
         AssetFileDescriptor descriptor = null;
-        long fileSize = 0;
         try {
             descriptor = context.getAssets().openFd(fileName);
             audioStream = descriptor.createInputStream();
@@ -54,7 +54,7 @@ public class AudioHelperBase {
         });
     }
 
-    Runnable transferAudio = new Runnable()
+    private Runnable transferAudio = new Runnable()
     {
         public void run()
         {
