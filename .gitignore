@@ -42,3 +42,6 @@ proguard/
 
 # Other Source Control Systems
 *.svn
+
+# Other Operating System Files
+.DS_Store

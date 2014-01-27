@@ -15,7 +15,6 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
         Button btnTrain = (Button)findViewById(R.id.btnTrain);
         btnTrain.setOnClickListener(new OnClickListener() {
 			
@@ -25,6 +24,7 @@ public class MainActivity extends Activity {
 				Intent myIntent = new Intent(MainActivity.this, TrainActivity.class);
 //				myIntent.putExtra("key", value); //Optional parameters
 				MainActivity.this.startActivity(myIntent);
+
 			}
 		});        
     }
