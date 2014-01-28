@@ -1,9 +1,9 @@
 package com.onebeat.StreamingAudio.activities;
 
 import android.app.Activity;
+import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -12,7 +12,8 @@ import com.onebeat.StreamingAudio.R;
 import com.onebeat.StreamingAudio.helpers.TrainAudioHelper;
 import com.onebeat.StreamingAudio.helpers.VibrationAudioHelper;
 
-import java.io.File;
+import java.io.FileDescriptor;
+import java.io.IOException;
 
 /** MainActivity activity mimics the audio streaming,
  * instead of streaming audio data on network,
@@ -43,18 +44,14 @@ public class VibrationPlayActivity extends Activity {
             }
         });
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-
-        File folder = new File(Environment.getExternalStorageDirectory() + "/BeatFiles");
-
-        boolean var = false;
-        if (!folder.exists())
-            var = folder.mkdir();
-
-        System.out.println("" + var);
-
-        String filename = folder.toString() + "/" + "lanegra.csv";
-
-        player = new VibrationAudioHelper(this, "lanegra.wav", filename);
+        AssetFileDescriptor descriptor = null;
+        try {
+            descriptor = this.getAssets().openFd("lanegra.wav");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        audioStream = descriptor.createInputStream();
+        player = new VibrationAudioHelper(this, "lanegra.wav", "lanegra.csv");
     }
     
     private void PlayAudio()

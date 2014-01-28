@@ -6,6 +6,8 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.util.Log;
 import android.content.Context;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -23,8 +25,9 @@ public class AudioHelperBase {
         /* OPEN FILE */
         AssetFileDescriptor descriptor = null;
         try {
-            descriptor = context.getAssets().openFd(fileName);
-            audioStream = descriptor.createInputStream();
+            //descriptor = context.getAssets().openFd(fileName);
+            //audioStream = descriptor.createInputStream();
+			audioStream = new FileInputStream(new File(fileName));
             fileSize = audioStream.getChannel().size();
             Log.d("AudioHelperBase", "file size is " + fileSize);
         } catch (IOException e1) {
