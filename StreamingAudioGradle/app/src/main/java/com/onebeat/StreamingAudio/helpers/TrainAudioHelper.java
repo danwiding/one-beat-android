@@ -12,16 +12,16 @@ public class TrainAudioHelper extends AudioHelperBase{
 
     public TrainAudioHelper(Context context, String fileName, String beatFileName) {
         super(context, fileName);
-        this.beatFile = new beatFileModel();
-        this.beatFile.setFileLocation(beatFileName);
+        this.beatFile = new beatFileModel(beatFileName);
     }
 
     public void tap(int beatNum){
+        Log.i("TrainHelperBase::tap", "Tap!");
         int markerPos = this.track.getPlaybackHeadPosition();
-        this.beatFile.beats.add(new beatModel(markerPos, beatNum));
+        this.beatFile.addBeat(markerPos, beatNum);
     }
 
     public void write(){
-        this.beatFile.writeFile(this.beatFile.getFileLocation());
+        this.beatFile.writeFile();
     }
 }

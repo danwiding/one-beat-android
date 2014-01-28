@@ -1,27 +1,24 @@
 package com.onebeat.StreamingAudio.helpers;
 
+import com.onebeat.StreamingAudio.models.beatFileModel;
 import android.content.Context;
 import android.media.AudioTrack;
+import android.media.AudioTrack.OnPlaybackPositionUpdateListener;
 import android.os.Vibrator;
 import android.util.Log;
 
-import com.onebeat.StreamingAudio.models.beatFileModel;
-
-public class VibrationAudioHelper extends AudioHelperBase implements AudioTrack.OnPlaybackPositionUpdateListener {
+public class VibrationAudioHelper extends AudioHelperBase implements OnPlaybackPositionUpdateListener {
     beatFileModel beatFile;
     int nextBeatIndex;
     Vibrator myVibrator;
 
-    public VibrationAudioHelper(Context context, String fileName) {
-        super(context, fileName);
-    }
-
     public VibrationAudioHelper(Context context, String fileName, String beatFileName) {
         super(context, fileName);
-        this.beatFile = beatFileModel.loadFile(beatFileName);
+        this.beatFile = new beatFileModel(beatFileName);
+        this.beatFile.loadFile();
         this.nextBeatIndex = 0;
-        if (beatFile.beats.size() > this.nextBeatIndex){
-            track.setNotificationMarkerPosition(beatFile.beats.get(this.nextBeatIndex++).markerPos);
+        if (this.beatFile.getNumVibs() > this.nextBeatIndex){
+            track.setNotificationMarkerPosition(beatFile.getMarkerPos(this.nextBeatIndex++));
         }
         else{
             track.setNotificationMarkerPosition((int)this.fileSize);
@@ -34,10 +31,11 @@ public class VibrationAudioHelper extends AudioHelperBase implements AudioTrack.
 
     @Override
     public void onMarkerReached(AudioTrack audioTrack) {
-        if (beatFile.beats.size() > this.nextBeatIndex){
+        if (this.beatFile.getNumVibs()  > this.nextBeatIndex){
             // Vibrate for 400 milliseconds
-            myVibrator.vibrate(200);
-            track.setNotificationMarkerPosition(beatFile.beats.get(this.nextBeatIndex++).markerPos);
+            myVibrator.vibrate(100);
+            Log.d("AudioHelperBase::onMarkerReached", "Vibrate!");
+            track.setNotificationMarkerPosition(beatFile.getMarkerPos(this.nextBeatIndex++));
         }
         else if (track.getPlaybackHeadPosition() <= this.fileSize){
             track.setNotificationMarkerPosition((int)this.fileSize);

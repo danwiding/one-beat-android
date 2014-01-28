@@ -14,27 +14,26 @@ import au.com.bytecode.opencsv.CSVWriter;
  * Created by davidjun on 1/26/14.
  */
 public class beatFileModel {
-    public ArrayList<beatModel> beats;
+    public ArrayList<beatModel> beatsArray;
     private String fileLocation;
 
-    public beatFileModel(){
-        this.beats = new ArrayList<beatModel>();
+    public beatFileModel(String fileName){
+        this.beatsArray = new ArrayList<beatModel>();
+        this.fileLocation = fileName;
     }
 
-    public static beatFileModel loadFile(String fileName) {
-        beatFileModel beatFile = new beatFileModel();
-        beatFile.fileLocation = fileName;
+    public void loadFile() {
         CSVReader reader = null;
         List rawBeatList = null;
         try {
-            reader = new CSVReader(new FileReader(fileName));
+            reader = new CSVReader(new FileReader(this.fileLocation));
             rawBeatList = reader.readAll();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            return null;
+            return;
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            return;
         } finally {
             try {
                 reader.close();
@@ -43,19 +42,21 @@ public class beatFileModel {
         }
         for (Object object : rawBeatList) {
             String[] row = (String[]) object;
-            beatModel beat = new beatModel(Integer.parseInt(row[0]), Integer.parseInt(row[1]));
-            beatFile.beats.add(beat);
+            addBeat(Integer.parseInt(row[0]), Integer.parseInt(row[1]));
         }
-        return beatFile;
     }
 
-    public void writeFile(String fileName){
+    public void addBeat(int markerPos, int beatNum) {
+        this.beatsArray.add(new beatModel(markerPos, beatNum));
+    }
+
+    public void writeFile(){
         CSVWriter writer = null;
         try {
-            writer = new CSVWriter(new FileWriter(fileName, false));
-            for (beatModel beat : this.beats){
-                String[] beatLine = {String.valueOf(beat.markerPos), String.valueOf(beat.beatNum)};
-                writer.writeNext(beatLine);
+            writer = new CSVWriter(new FileWriter(this.fileLocation, false));
+            for (beatModel beat : this.beatsArray){
+                String tmp = String.valueOf(beat.markerPos) + "#" + String.valueOf(beat.beatNum);
+                writer.writeNext(tmp.split("#"));
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -72,10 +73,19 @@ public class beatFileModel {
     }
 
     public String getFileLocation() {
-        return fileLocation;
+        return this.fileLocation;
     }
 
     public void setFileLocation(String fileLocation) {
         this.fileLocation = fileLocation;
+    }
+
+    public int getNumVibs() {
+        return this.beatsArray.size();
+    }
+
+    public int getMarkerPos(int idx) {
+        beatModel curbeat = this.beatsArray.get(idx);
+        return curbeat.markerPos;
     }
 }
