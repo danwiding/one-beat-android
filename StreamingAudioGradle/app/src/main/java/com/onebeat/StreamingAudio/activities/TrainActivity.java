@@ -2,6 +2,7 @@ package com.onebeat.StreamingAudio.activities;
 
 import com.onebeat.StreamingAudio.R;
 import com.onebeat.StreamingAudio.helpers.AudioHelperBase;
+import com.onebeat.StreamingAudio.helpers.TrainAudioHelper;
 
 import android.app.Activity;
 import android.content.res.Resources;
@@ -35,8 +36,8 @@ import java.io.File;
  * The main purpose is to show how to play data 
  * buffer in chunks with AudioTrack class */
 public class TrainActivity extends Activity implements OnItemSelectedListener {
-    AudioHelperBase aH;
-    ListView musiclist;
+    TrainAudioHelper trainer;
+	ListView musiclist;
     int music_column_index;
     int count;
     TextView selection;
@@ -60,34 +61,36 @@ public class TrainActivity extends Activity implements OnItemSelectedListener {
             @Override
             public void onClick(View v) {
                 if (BState == true) {
-                    aH.play();
+                    PlayAudio();
                     btnPlayPause.setBackgroundResource(R.drawable.pausebutton);
                     BState = false;
                 } else {
-                    aH.stop();
+                    StopAudio();
                     btnPlayPause.setBackgroundResource(R.drawable.playbutton);
                     BState = true;
                 }
             }
         });
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        //aH = new AudioHelperBase(this, "lanegra.wav");
-    }
+		Button btnTap = (Button)findViewById(R.id.btnTap);
+        btnTap.setOnClickListener(new OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                TapAudio();
+            }
+        });
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+    }
     private void init_mspinner() {
 
         String path = Environment.getExternalStorageDirectory().toString()+"/Music";
-        Log.d("Files", "Path: " + path);
 
         File f = new File(path);
         file = f.listFiles();
 
-        Log.d("Files", "Size: "+ file.length);
-
         mStrings = new String[file.length];
         for (int i=0; i < file.length; i++)
         {
-            Log.d("Files", "FileName:" + file[i].getName());
             mStrings[i] = file[i].getName();
         }
 
@@ -101,15 +104,13 @@ public class TrainActivity extends Activity implements OnItemSelectedListener {
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mspinner.setAdapter(adapter);
-
     }
 
-    @Override
+	@Override
     public void onItemSelected(AdapterView<?> parent, View v, int position,
                                long id) {
-        // TODO Auto-generated method stub
         //selection.setText(mStrings[position]);
-        aH = new AudioHelperBase(this, file[position]);
+		trainer = new TrainAudioHelper(this, file[position].getPath(), "lanegra.csv");
 
     }
 
@@ -117,5 +118,21 @@ public class TrainActivity extends Activity implements OnItemSelectedListener {
     public void onNothingSelected(AdapterView<?> arg0) {
         // TODO Auto-generated method stub
         //selection.setText("");
+    }
+
+    private void PlayAudio()
+    {
+        trainer.play();
+    }
+
+    private void StopAudio()
+    {
+        trainer.stop();
+        trainer.write();
+    }
+
+    private void TapAudio()
+    {
+        trainer.tap(1);
     }
 }
