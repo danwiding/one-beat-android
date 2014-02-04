@@ -7,47 +7,61 @@ import android.media.AudioTrack.OnPlaybackPositionUpdateListener;
 import android.os.Vibrator;
 import android.util.Log;
 
-public class VibrationAudioHelper extends AudioHelperBase implements OnPlaybackPositionUpdateListener {
+public class VibrationAudioHelper extends AudioHelperBase {
     beatFileModel beatFile;
     int nextBeatIndex;
     Vibrator myVibrator;
+    Thread vibrateThread;
 
     public VibrationAudioHelper(Context context, String fileName, String beatFileName) {
         super(context, fileName);
+
+        // load beat file
         this.beatFile = new beatFileModel(beatFileName);
         this.beatFile.loadFile();
         this.nextBeatIndex = 0;
-        if (this.beatFile.getNumVibs() > this.nextBeatIndex){
-            track.setNotificationMarkerPosition(beatFile.getMarkerPos(this.nextBeatIndex++));
-        }
-        else{
-            track.setNotificationMarkerPosition((int)this.fileSize);
-        }
-        track.setPlaybackPositionUpdateListener(this);
 
         // Get instance of Vibrator from current Context
         myVibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
-    }
 
-    @Override
-    public void onMarkerReached(AudioTrack audioTrack) {
-        if (this.beatFile.getNumVibs()  > this.nextBeatIndex){
-            // Vibrate for 400 milliseconds
-            myVibrator.vibrate(100);
-            Log.d("AudioHelperBase::onMarkerReached", "Vibrate!");
-            track.setNotificationMarkerPosition(beatFile.getMarkerPos(this.nextBeatIndex++));
-        }
-        else if (track.getPlaybackHeadPosition() <= this.fileSize){
-            track.setNotificationMarkerPosition((int)this.fileSize);
-        }
-        else{
-            stop();
-            Log.d("AudioHelperBase", "Audio track end of file reached...");
-        }
-    }
+        vibrateThread = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    if (beatFile.getNumVibs() > nextBeatIndex){
+                        track.setNotificationMarkerPosition(beatFile.getMarkerPos(nextBeatIndex++));
+                    }
+                    else{
+                        track.setNotificationMarkerPosition((int)fileSize);
+                    }
+                    track.setPlaybackPositionUpdateListener(new OnPlaybackPositionUpdateListener() {
+                        @Override
+                        public void onMarkerReached(AudioTrack track) {
+                            if (beatFile.getNumVibs()  > nextBeatIndex){
+                                myVibrator.vibrate(50);
+                                Log.d("AudioHelperBase::vibrateThread::onMarkerReached", "Vibrate!");
+                                track.setNotificationMarkerPosition(beatFile.getMarkerPos(nextBeatIndex++));
+                            }
+                            else if (track.getPlaybackHeadPosition() <= fileSize){
+                                track.setNotificationMarkerPosition((int)fileSize);
+                            }
+                            else{
+                                stop();
+                                Log.d("AudioHelperBase", "Audio track end of file reached...");
+                            }
+                        }
 
-    @Override
-    public void onPeriodicNotification(AudioTrack audioTrack) {
+                        @Override
+                        public void onPeriodicNotification(AudioTrack track) {
 
+                        }
+                    });
+                }
+                catch (Throwable t) {
+                    Log.i("vibrateThread", "Thread  exception "+t);
+                }
+            }
+        });
+
+        vibrateThread.start();
     }
 }
